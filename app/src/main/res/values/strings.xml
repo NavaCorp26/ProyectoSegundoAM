@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Proyecto Segundo</string>
+
+    <string name="welcome_message">¡Bienvenido! Comienza tu travesia aquí.</string>
+
+
+    <string name="correo">Correo electrónico</string>
+    <string name="contrasenia">Contraseña</string>
+
+    <string name="btnregistro">Registrarse</string>
+    <string name="btn_inicio">Iniciar sesion</string>
+    <string name="btn_salir">Salir</string>
+    <string name="btn_registrar">Registrar</string>
+    <string name="fraseagradecimiento"> Gracias por usar esta app</string>
+
+
 </resources>

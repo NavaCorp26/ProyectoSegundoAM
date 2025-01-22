@@ -17,6 +17,9 @@
         android:theme="@style/Theme.ProyectoSegundo"
         tools:targetApi="31">
         <activity
+            android:name=".view.home.login.LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.home.MainActivity"
             android:exported="true">
             <intent-filter>

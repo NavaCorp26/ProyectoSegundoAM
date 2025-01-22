@@ -7,4 +7,17 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+
+    <!-- Tonos de café -->
+    <color name="coffee_light">#D2B48C</color> <!-- Café claro -->
+    <color name="coffee_medium">#F57C00</color>
+    <color name="blueOsc">#2B547E</color><!-- Café medio -->
+    <color name="coffee_dark">#F57C00</color> <!-- Café oscuro -->
+    <color name="coffee_beige">#C5A880</color> <!-- Beige (tono suave de café) -->
+    <color name="coffee_brown">#6F4F1A</color> <!-- Café marrón -->
+    <color name="aceptar">#AD7626</color>
+    <color name="cancelar">#2B547E</color>
+
 </resources>
