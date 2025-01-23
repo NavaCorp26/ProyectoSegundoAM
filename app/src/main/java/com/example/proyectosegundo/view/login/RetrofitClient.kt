@@ -1,4 +1,4 @@
-package com.example.proyectosegundo.view.home.login
+package com.example.proyectosegundo.view.login
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

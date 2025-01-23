@@ -1,4 +1,4 @@
-package com.example.proyectosegundo.view.home.login
+package com.example.proyectosegundo.view.login
 
 data class LoginResponse(
     val message: String,
