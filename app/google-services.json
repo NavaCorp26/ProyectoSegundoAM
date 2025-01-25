@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1030205143992",
+    "project_id": "proyectoam-ba7fb",
+    "storage_bucket": "proyectoam-ba7fb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1030205143992:android:0e04c57734c510f048ed4d",
+        "android_client_info": {
+          "package_name": "com.example.proyectosegundo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAsPYwVUULu1xbGhG84ctV10LpyLd5t4k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

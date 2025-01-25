@@ -1,9 +1,11 @@
 package com.example.proyectosegundo.model.data
 
 data class Product(
-    val id: String,
-    val name: String,
-    val description: String,
-    val price: Double,
-    val imageUrl: String
-)
+    val productoId: String,
+    val nombre: String,
+    val categoria: String,
+    val precio: String,
+    val stock: Int
+) {
+    constructor() : this("", "", "", "", 0)
+}

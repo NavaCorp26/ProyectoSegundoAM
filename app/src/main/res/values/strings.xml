@@ -12,6 +12,9 @@
     <string name="btn_salir">Salir</string>
     <string name="btn_registrar">Registrar</string>
     <string name="fraseagradecimiento"> Gracias por usar esta app</string>
+    <string name="rol">Rol</string>
+    <string name="nombre_de_usuario">Nombre de usuario</string>
+    <string name="correo_electr_nico">Correo electrónico</string>
 
 
 </resources>
