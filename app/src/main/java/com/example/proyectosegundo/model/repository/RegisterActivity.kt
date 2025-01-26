@@ -1,25 +1,34 @@
 package com.example.proyectosegundo.model.repository
 
 import android.os.Bundle
+import android.view.WindowInsetsAnimation
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.proyectosegundo.R
+import com.example.proyectosegundo.controller.navigation.ApiService
 import com.example.proyectosegundo.model.data.Usuario
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.example.proyectosegundo.utils.RetrofitInstance
+import com.example.proyectosegundo.utils.UsuarioRetrofitInstance
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var etFirstName: EditText
     private lateinit var etLastName: EditText
-    private lateinit var etUsername: EditText
     private lateinit var etEmail: EditText
     private lateinit var etPassword: EditText
+    private lateinit var etUsername: EditText
     private lateinit var btnRegister: Button
+
+    private val apiService = UsuarioRetrofitInstance.usuarioService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,37 +44,39 @@ class RegisterActivity : AppCompatActivity() {
     private fun initComponents() {
         etFirstName = findViewById(R.id.etFirstName)
         etLastName = findViewById(R.id.etLastName)
-        etUsername = findViewById(R.id.etUsername)
         etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
+        etUsername = findViewById(R.id.etUsername)
         btnRegister = findViewById(R.id.btnRegister)
     }
 
     private fun registerUser() {
         val firstName = etFirstName.text.toString().trim()
         val lastName = etLastName.text.toString().trim()
-        val username = etUsername.text.toString().trim()
         val email = etEmail.text.toString().trim()
         val password = etPassword.text.toString().trim()
+        val username = etUsername.text.toString().trim()
 
         try {
             // Validar que los campos no estén vacíos
-            validateFields(firstName, lastName, username, email, password)
+            validateFields(firstName, lastName, email, password)
 
             // Validar la seguridad de la contraseña
             validatePassword(password)
 
-            // Validar si el nombre de usuario ya existe en la base de datos
-            checkUsernameExists(username) { exists ->
+            // Verificar si el correo electrónico ya existe
+            checkEmailExists(email) { exists ->
                 if (exists) {
                     Toast.makeText(
                         this,
-                        "El nombre de usuario ya está en uso, intenta con otro",
+                        "El correo electrónico ya está en uso, intenta con otro",
                         Toast.LENGTH_LONG
                     ).show()
                 } else {
                     // Registrar al usuario
-                    saveUserToDatabase(firstName, lastName, username, email, password)
+
+                    val user = Usuario(0, firstName, lastName, username, email, password)
+                    registerUserInApi(user)
                 }
             }
         } catch (e: Exception) {
@@ -76,11 +87,10 @@ class RegisterActivity : AppCompatActivity() {
     private fun validateFields(
         firstName: String,
         lastName: String,
-        username: String,
         email: String,
         password: String
     ) {
-        if (firstName.isEmpty() || lastName.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+        if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()) {
             throw Exception("Por favor, llena todos los campos")
         }
 
@@ -106,39 +116,70 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkUsernameExists(username: String, callback: (Boolean) -> Unit) {
-        val dbRef = FirebaseDatabase.getInstance().getReference("Usuarios")
-        dbRef.orderByChild("username").equalTo(username)
-            .addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    callback(snapshot.exists())
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    Toast.makeText(this@RegisterActivity, "Error: ${error.message}", Toast.LENGTH_LONG)
-                        .show()
-                }
-            })
+    private fun handleApiError(exception: Exception) {
+        Toast.makeText(
+            this@RegisterActivity,
+            "Error al conectar con el servidor: ${exception.message}",
+            Toast.LENGTH_LONG
+        ).show()
     }
 
-    private fun saveUserToDatabase(
-        firstName: String,
-        lastName: String,
-        username: String,
-        email: String,
-        password: String
-    ) {
-        val userId = FirebaseDatabase.getInstance().reference.push().key ?: ""
-        val usuario = Usuario(userId, firstName, lastName, username, email, password)
+    private fun checkEmailExists(email: String, callback: (Boolean) -> Unit) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response: Response<Boolean> = apiService.checkEmail(email) // Llama a la API
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        callback(response.body() ?: false) // Si la respuesta es exitosa, se pasa el cuerpo
+                    } else {
+                        Toast.makeText(
+                            this@RegisterActivity,
+                            "Error al verificar el correo electrónico",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        callback(false) // Si falla, devolver false
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        this@RegisterActivity,
+                        "Error al conectar con el servidor: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    callback(false) // Si ocurre una excepción, devolver false
+                }
+            }
+        }
+    }
 
-        val dbRef = FirebaseDatabase.getInstance().getReference("Usuarios")
-        dbRef.child(userId).setValue(usuario)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Registro exitoso", Toast.LENGTH_LONG).show()
-                finish()
+    // Registra un nuevo usuario
+    private fun registerUserInApi(usuario: Usuario) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response: Response<Usuario> = apiService.registerUser(usuario) // Sin .execute()
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(this@RegisterActivity, "Registro exitoso", Toast.LENGTH_LONG)
+                            .show()
+                        finish()  // Cierra la actividad después del registro exitoso
+                    } else {
+                        Toast.makeText(
+                            this@RegisterActivity,
+                            "Error al registrar el usuario: ${response.message()}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        this@RegisterActivity,
+                        "Error al conectar con el servidor: ${e.message}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
-            .addOnFailureListener { error ->
-                Toast.makeText(this, "Error: ${error.message}", Toast.LENGTH_LONG).show()
-            }
+        }
     }
 }

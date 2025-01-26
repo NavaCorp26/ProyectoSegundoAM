@@ -18,6 +18,8 @@ import com.google.firebase.database.FirebaseDatabase
 
 class UploadProductActivity : AppCompatActivity() {
 
+}
+    /*
     private lateinit var etNombre: EditText
     private lateinit var etCategoria: EditText
     private lateinit var etPrecio: EditText
@@ -118,4 +120,11 @@ class UploadProductActivity : AppCompatActivity() {
             Toast.makeText(this, "Error: ${error.message}", Toast.LENGTH_LONG).show()
         }
     }
-}
+     */
+
+
+     */
+     */
+
+
+

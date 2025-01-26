@@ -1,7 +1,7 @@
 package com.example.proyectosegundo.model.data
 
 data class Product(
-    val productoId: String,
+    val productoId: Long ,
     val nombre: String,
     val categoria: String,
     val precio: String,
@@ -9,5 +9,5 @@ data class Product(
     val miniaturaUrl: String,
     val imagenes: List<String>
 ) {
-    constructor() : this("", "", "", "", 0, "", emptyList())
+    constructor() : this(0, "", "", "", 0, "", emptyList())
 }

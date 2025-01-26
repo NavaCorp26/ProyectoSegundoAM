@@ -1,65 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="32dp"
-    android:orientation="vertical">
+    android:padding="32dp">
 
-    <EditText
-        android:id="@+id/etFirstName"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nombre"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_edittext" />
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/etLastName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Apellido"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_edittext" />
+        <!-- Campo de Nombre -->
+        <EditText
+            android:id="@+id/etFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_edittext" />
 
-    <EditText
-        android:id="@+id/etUsername"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Nombre de usuario"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_edittext" />
+        <TextView
+            android:id="@+id/tvErrorFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_light"
+            android:visibility="gone"
+            android:text="El nombre es obligatorio"
+            android:layout_marginBottom="16dp" />
 
-    <EditText
-        android:id="@+id/etEmail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Correo electrónico"
-        android:inputType="textEmailAddress"
-        android:padding="12dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_edittext" />
+        <!-- Campo de Apellido -->
+        <EditText
+            android:id="@+id/etLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Apellido"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_edittext" />
 
-    <EditText
-        android:id="@+id/etPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Contraseña"
-        android:inputType="textPassword"
-        android:padding="12dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/rounded_edittext" />
+        <TextView
+            android:id="@+id/tvErrorLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_light"
+            android:visibility="gone"
+            android:text="El apellido es obligatorio"
+            android:layout_marginBottom="16dp" />
 
-    <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Registrar"
-        android:textColor="@android:color/white"
-        android:backgroundTint="@color/coffee_dark"
-        android:textStyle="bold"
-        android:elevation="4dp" />
+        <!-- Campo de Nombre de Usuario -->
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre de usuario"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_edittext" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/tvErrorUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_light"
+            android:visibility="gone"
+            android:text="El nombre de usuario es obligatorio"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Campo de Correo Electrónico -->
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Correo electrónico"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_edittext" />
+
+        <TextView
+            android:id="@+id/tvErrorEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_light"
+            android:visibility="gone"
+            android:text="El correo electrónico no es válido"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Campo de Contraseña -->
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Contraseña"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/rounded_edittext" />
+
+        <TextView
+            android:id="@+id/tvErrorPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/holo_red_light"
+            android:visibility="gone"
+            android:text="La contraseña debe tener al menos 8 caracteres"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Botón de Registro -->
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Registrar"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/coffee_dark"
+            android:textStyle="bold"
+            android:elevation="4dp" />
+
+    </LinearLayout>
+</ScrollView>

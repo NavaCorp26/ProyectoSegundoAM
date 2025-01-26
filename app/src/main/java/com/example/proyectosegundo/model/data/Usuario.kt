@@ -1,7 +1,7 @@
 package com.example.proyectosegundo.model.data
 
 data class Usuario(
-    val userId: String,
+    val userId: Long,
     val userFirstName: String,
     val userLastName: String,
     val username: String,
@@ -10,7 +10,7 @@ data class Usuario(
 ) {
 
     constructor() : this(
-        "",
+        0,
         "",
         "",
         "",

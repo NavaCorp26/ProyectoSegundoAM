@@ -7,20 +7,26 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.proyectosegundo.R
+import com.example.proyectosegundo.controller.navigation.ApiService
 import com.example.proyectosegundo.model.data.Usuario
-import com.example.proyectosegundo.model.repository.ProductsActivity
 import com.example.proyectosegundo.model.repository.RegisterActivity
 import com.example.proyectosegundo.model.repository.TiendaActivity
 import com.example.proyectosegundo.model.repository.UploadProductActivity
+import com.example.proyectosegundo.utils.RetrofitInstance
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
+
+    private val apiService: ApiService = RetrofitInstance.usuarioService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -49,6 +55,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        // Configurar el listener para el botón de productos
         btnProduct.setOnClickListener {
             val intent = Intent(this, UploadProductActivity::class.java)
             startActivity(intent)
@@ -56,32 +63,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun autenticarUsuario(correo: String, contrasena: String) {
-        val dbRef = FirebaseDatabase.getInstance().getReference("Usuarios")
-        dbRef.orderByChild("userEmail").equalTo(correo).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.exists()) {
-                    // Se encontró el usuario con el correo
-                    for (userSnapshot in snapshot.children) {
-                        val storedPassword = userSnapshot.child("userPass").getValue(String::class.java)
+        val usuario = Usuario(0, "", "", correo, correo, contrasena)
 
-                        // Comparar la contraseña
-                        if (storedPassword == contrasena) {
-                            // Autenticación exitosa, proceder al inicio
-                            val intent = Intent(this@MainActivity, TiendaActivity::class.java)
-                            startActivity(intent)
-                            finish()  // Cerrar la actividad de login
-                        } else {
-                            Toast.makeText(this@MainActivity, "Contraseña incorrecta", Toast.LENGTH_LONG).show()
-                        }
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = apiService.loginUsuario(usuario)
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        // Autenticación exitosa, proceder al inicio
+                        val intent = Intent(this@MainActivity, TiendaActivity::class.java)
+                        startActivity(intent)
+                        finish()  // Cerrar la actividad de login
+                    } else {
+                        Toast.makeText(this@MainActivity, "Credenciales incorrectas", Toast.LENGTH_LONG).show()
                     }
-                } else {
-                    Toast.makeText(this@MainActivity, "Usuario no encontrado", Toast.LENGTH_LONG).show()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, "Error al autenticar: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@MainActivity, "Error: ${error.message}", Toast.LENGTH_LONG).show()
-            }
-        })
+        }
     }
 }
