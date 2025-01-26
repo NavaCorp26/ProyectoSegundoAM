@@ -26,7 +26,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".model.repository.RegisterActivity" />" />
+        <activity android:name=".model.repository.RegisterActivity" />
+        <activity android:name=".model.repository.UploadProductActivity" />
+        <activity android:name=".model.repository.TiendaActivity" />
+        <activity android:name=".model.repository.UsuarioDetalleActivity" />
+
     </application>
 
 </manifest>

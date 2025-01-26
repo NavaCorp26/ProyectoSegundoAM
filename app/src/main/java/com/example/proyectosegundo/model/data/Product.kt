@@ -5,7 +5,9 @@ data class Product(
     val nombre: String,
     val categoria: String,
     val precio: String,
-    val stock: Int
+    val stock: Int,
+    val miniaturaUrl: String,
+    val imagenes: List<String>
 ) {
-    constructor() : this("", "", "", "", 0)
+    constructor() : this("", "", "", "", 0, "", emptyList())
 }

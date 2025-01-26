@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- EditText para el nombre del producto -->
+        <EditText
+            android:id="@+id/etNombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre del Producto" />
+
+        <!-- EditText para la categoría del producto -->
+        <EditText
+            android:id="@+id/etCategoria"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Categoría" />
+
+        <!-- EditText para el precio del producto -->
+        <EditText
+            android:id="@+id/etPrecio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Precio" />
+
+        <!-- EditText para el stock del producto -->
+        <EditText
+            android:id="@+id/etStock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Stock" />
+
+        <!-- Botón para seleccionar la miniatura -->
+        <Button
+            android:id="@+id/btnSeleccionarMiniatura"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Seleccionar Miniatura" />
+
+        <ImageView
+            android:id="@+id/ivMiniatura"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginVertical="8dp"
+            android:scaleType="centerCrop"
+            android:background="@android:color/darker_gray" />
+
+        <Button
+            android:id="@+id/btnSubirImagenes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Seleccionar Imágenes" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvImagenes"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginVertical="8dp" />
+
+        <!-- Botón para guardar el producto -->
+        <Button
+            android:id="@+id/btnGuardarProducto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Guardar Producto" />
+    </LinearLayout>
+</ScrollView>
