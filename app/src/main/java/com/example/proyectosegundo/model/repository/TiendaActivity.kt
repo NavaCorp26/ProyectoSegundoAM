@@ -1,7 +1,9 @@
 package com.example.proyectosegundo.model.repository
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
@@ -9,71 +11,62 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.proyectosegundo.R
 import com.example.proyectosegundo.model.data.Product
 import com.example.proyectosegundo.model.data.ProductAdapter
+import com.example.proyectosegundo.model.data.ProductDetailActivity
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 
 class TiendaActivity : AppCompatActivity() {
 
-    private lateinit var rvProductos: RecyclerView
-    private lateinit var etFiltro: EditText
-    private lateinit var adapter: ProductAdapter
-    private lateinit var layoutManager: GridLayoutManager
-    private val productos = mutableListOf<Product>()
-    private var lastVisible: DocumentSnapshot? = null
-
-    private val dbRef = FirebaseFirestore.getInstance().collection("Productos")
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var productAdapter: ProductAdapter
+    private val productos: MutableList<Product> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tienda)
 
-        rvProductos = findViewById(R.id.rvProductos)
-        etFiltro = findViewById(R.id.etFiltro)
-
-        // Configurar el RecyclerView para 2 columnas
-        layoutManager = GridLayoutManager(this, 2)
-        rvProductos.layoutManager = layoutManager
-
-        adapter = ProductAdapter(productos)
-        rvProductos.adapter = adapter
-
-        // Cargar productos
-        cargarProductos()
-
-        // Filtro en el EditText
-        etFiltro.addTextChangedListener {
-            cargarProductos(it.toString())
-        }
+        initComponents()
+        loadProductsFromFirebase()
     }
 
-    private fun cargarProductos(filtro: String = "") {
-        var query: Query = dbRef.limit(10)
-
-        if (filtro.isNotEmpty()) {
-            query = query.whereArrayContains("nombre", filtro)
-        }
-
-        query = query.orderBy("nombre")
-
-        if (lastVisible != null) {
-            query = query.startAfter(lastVisible!!)
-        }
-
-        query.get().addOnSuccessListener { result ->
-            val nuevoProductos = mutableListOf<Product>()
-            for (document in result) {
-                val producto = document.toObject(Product::class.java)
-                nuevoProductos.add(producto)
+    private fun initComponents() {
+        recyclerView = findViewById(R.id.recyclerViewTienda)
+        recyclerView.layoutManager = GridLayoutManager(this, 2) // Mostrar en 2 columnas
+        productAdapter = ProductAdapter(productos) { product ->
+            // Manejar el clic en un producto
+            val intent = Intent(this, ProductDetailActivity::class.java).apply {
+                putExtra("productoId", product.productoId)
+                putExtra("nombre", product.nombre)
+                putExtra("categoria", product.categoria)
+                putExtra("precio", product.precio)
+                putExtra("stock", product.stock)
             }
-
-            // Si hay productos, los agregamos a la lista
-            if (nuevoProductos.isNotEmpty()) {
-                lastVisible = result.documents[result.size() - 1]
-                productos.addAll(nuevoProductos)
-                adapter.notifyDataSetChanged()
-            }
+            startActivity(intent)
         }
+        recyclerView.adapter = productAdapter
     }
 
+    private fun loadProductsFromFirebase() {
+        val dbRef = FirebaseDatabase.getInstance().getReference("Productos")
+
+        dbRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                productos.clear() // Limpiar la lista antes de agregar nuevos datos
+                for (productSnapshot in snapshot.children) {
+                    val product = productSnapshot.getValue(Product::class.java)
+                    product?.let { productos.add(it) }
+                }
+                productAdapter.notifyDataSetChanged() // Actualizar la lista en el RecyclerView
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@TiendaActivity, "Error al cargar productos: ${error.message}", Toast.LENGTH_LONG).show()
+            }
+        })
+    }
 }
